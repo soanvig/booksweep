@@ -3,5 +3,8 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Print(ReadStdin())
+	input := ReadStdin()
+	bookmarks := Parse(input)
+
+	fmt.Printf("%+v", bookmarks)
 }
