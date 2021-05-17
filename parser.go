@@ -6,8 +6,9 @@ import (
 )
 
 type Bookmark struct {
-	title    string
-	children []Bookmark
+	Guid     string
+	Title    string
+	Children []Bookmark
 }
 
 func Parse(input string) Bookmark {
