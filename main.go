@@ -1,8 +1,21 @@
 package main
 
+import "fmt"
+
 func main() {
 	input := ReadStdin()
-	bookmarks := Parse(input)
+	bookmarks := Unwind(Parse(input))
+	notWorkingBookmarks := make([]Bookmark, 0)
 
-	PrettyPrint(Unwind(bookmarks))
+	for _, bookmark := range bookmarks {
+		if bookmark.Uri != "" && !Test(bookmark.Uri) {
+			notWorkingBookmarks = append(notWorkingBookmarks, bookmark)
+		}
+	}
+
+	fmt.Println("All bookmarks")
+	PrettyPrint(bookmarks)
+
+	fmt.Println("Not working bookmarks:")
+	PrettyPrint(notWorkingBookmarks)
 }

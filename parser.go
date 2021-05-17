@@ -2,14 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 )
-
-type Bookmark struct {
-	Guid     string
-	Title    string
-	Children []Bookmark
-}
 
 func Unwind(bookmark Bookmark) []Bookmark {
 	if len(bookmark.Children) == 0 {
@@ -31,7 +25,7 @@ func Parse(input string) Bookmark {
 	err := json.Unmarshal([]byte(input), &tree)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalf(err.Error())
 	}
 
 	return tree
