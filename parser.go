@@ -11,6 +11,20 @@ type Bookmark struct {
 	Children []Bookmark
 }
 
+func Unwind(bookmark Bookmark) []Bookmark {
+	if len(bookmark.Children) == 0 {
+		return []Bookmark{bookmark}
+	}
+
+	unwindedChildren := make([]Bookmark, 0)
+
+	for _, child := range bookmark.Children {
+		unwindedChildren = append(unwindedChildren, Unwind(child)...)
+	}
+
+	return append([]Bookmark{bookmark}, unwindedChildren...)
+}
+
 func Parse(input string) Bookmark {
 	var tree Bookmark
 
