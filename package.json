@@ -1,14 +1,17 @@
 {
-  "type": "module",
-  "scripts": {
-    "start": "node --experimental-modules index.js"
+  "name": "booksweep",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "repository": "https://github.com/soanvig/booksweep.git",
+  "author": "Soanvig <soanvig@gmail.com>",
+  "license": "LGPLv3",
+  "dependencies": {
+    "@leocode/code-snippets": "git+https://github.com/leocode/code-snippets.git",
+    "dotenv": "^10.0.0",
+    "got": "^11.8.2",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.138",
-    "@types/node": "^12.7.5"
-  },
-  "dependencies": {
-    "googleapis": "^43.0.0",
-    "lodash": "^4.17.15"
+    "@types/lodash": "^4.14.170"
   }
 }
