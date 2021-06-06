@@ -24,7 +24,7 @@ const main = async () => {
   const bookmarks = firefoxParser(bookmarksJson);
   const bookmarksWithTesters = assignTesters(bookmarks);
 
-  const result = await spawnWorkers(bookmarksWithTesters.slice(0, 6));
+  const result = await spawnWorkers(bookmarksWithTesters.slice(0, 50));
 
   console.log(result);
 }
@@ -44,7 +44,7 @@ const spawnWorkers = async (bookmarksWithTesters) => {
 
     cluster.on('online', (worker) => {
       console.log(`Worker ${worker.process.pid} is ready, sending task.`);
-    
+
       const index = workers.findIndex(w => w === worker);
       const chunk = chunks[index];
 
@@ -65,6 +65,8 @@ const spawnWorkers = async (bookmarksWithTesters) => {
           if (finishedWorkers === workers.length) {
             resolve(results);
           }
+        } else if (message.type === 'debug') {
+          console.debug(JSON.stringify(message, null, 2));
         }
       });
 

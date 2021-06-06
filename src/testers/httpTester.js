@@ -1,5 +1,8 @@
 const got = require('got');
 
+/** @TODO ??? this seems to be required but dunno, maybe there is better solution */
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 module.exports = {
   httpTester: {
     name: 'http',
@@ -8,11 +11,15 @@ module.exports = {
     },
     async test (url) {
       try {
-        const res = await got.head(url);
-  
-        return res.statusCode < 400;
-      } catch {
-        return false;
+        const res = await got.head(url, { throwHttpErrors: false });
+        
+        return res.statusCode !== 404;
+      } catch (e) {
+        switch (e.code) {
+          case 'ENOTFOUND': return false;
+          case 'ECONNREFUSED': return true; /** @NOTE: unsure */
+          default: throw e;
+        }
       }
     }
   }
