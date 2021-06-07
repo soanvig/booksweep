@@ -18,6 +18,7 @@ module.exports = {
         switch (e.code) {
           case 'ENOTFOUND': return false;
           case 'ECONNREFUSED': return true; /** @NOTE: unsure */
+          case 'EAI_AGAIN': return false; /** @NOTE: unsure */
           default: throw e;
         }
       }
