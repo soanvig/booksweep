@@ -8,6 +8,7 @@
   "dependencies": {
     "@leocode/code-snippets": "git+https://github.com/leocode/code-snippets.git",
     "dotenv": "^10.0.0",
+    "googleapis": "^75.0.0",
     "got": "^11.8.2",
     "lodash": "^4.17.21"
   },

@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const { fsInput } = require('./inputs/fsInput');
 const { firefoxParser } = require('./parsers/firefoxParser');
 const { httpTester } = require('./testers/httpTester');
@@ -24,7 +26,9 @@ const main = async () => {
   const bookmarks = firefoxParser(bookmarksJson);
   const bookmarksWithTesters = assignTesters(bookmarks);
 
-  const result = await spawnWorkers(bookmarksWithTesters.slice(0, 50));
+  // console.log(bookmarksWithTesters.filter(b => b.tester === 'youtube'));
+
+  const result = await spawnWorkers(bookmarksWithTesters.filter(b => b.tester === 'youtube').slice(0, 1));
 
   console.log(result);
 }
@@ -47,6 +51,12 @@ const spawnWorkers = async (bookmarksWithTesters) => {
 
       const index = workers.findIndex(w => w === worker);
       const chunk = chunks[index];
+
+      if (!chunk) {
+        worker.destroy();
+        finishedWorkers += 1;
+        return;
+      }
 
       worker.send({
         task: 'process',
