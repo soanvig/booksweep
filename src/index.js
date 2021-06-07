@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const { fsInput } = require('./inputs/fsInput');
-const { firefoxParser } = require('./parsers/firefoxParser');
+const { firefoxParser, firefoxApplier } = require('./parsers/firefoxParser');
 const { httpTester } = require('./testers/httpTester');
 const { youtubeTester } = require('./testers/youtubeTester');
 const { cpus } = require('os');
@@ -26,9 +26,7 @@ const main = async () => {
   const bookmarks = firefoxParser(bookmarksJson);
   const bookmarksWithTesters = assignTesters(bookmarks);
 
-  // console.log(bookmarksWithTesters.filter(b => b.tester === 'youtube'));
-
-  const result = await spawnWorkers(bookmarksWithTesters.filter(b => b.tester === 'youtube').slice(0, 1));
+  const result = await spawnWorkers(bookmarksWithTesters.filter(b => b.tester === 'http'));
 
   console.log(result);
 }
