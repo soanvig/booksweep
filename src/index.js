@@ -1,5 +1,5 @@
 require('dotenv').config();
-
+const { promises: fs } = require('fs');
 const { fsInput } = require('./inputs/fsInput');
 const { firefoxParser, firefoxApplier } = require('./parsers/firefoxParser');
 const { httpTester } = require('./testers/httpTester');
@@ -26,9 +26,11 @@ const main = async () => {
   const bookmarks = firefoxParser(bookmarksJson);
   const bookmarksWithTesters = assignTesters(bookmarks);
 
-  const result = await spawnWorkers(bookmarksWithTesters.filter(b => b.tester === 'http'));
+  const result = await spawnWorkers(bookmarksWithTesters);
 
-  console.log(result);
+  const applied = firefoxApplier(bookmarksJson, result);
+
+  await fs.writeFile('./parsed.json', JSON.stringify(applied));
 }
 
 const spawnWorkers = async (bookmarksWithTesters) => {
