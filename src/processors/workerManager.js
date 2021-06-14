@@ -1,54 +1,33 @@
-const { cpus } = require('os');
-const cluster = require('cluster');
 const _ = require('lodash');
-
-const createWorker = async (task) => {
-  return await new Promise((resolve, reject) => {
-    const originalWorker = cluster.fork();
-
-    cluster.on('online', worker => {
-      if (worker.id !== originalWorker.id) {
-        return;
-      }
-  
-      console.log(`Worker ${worker.process.pid} is ready`);
-
-      worker.on('message', (message) => {
-        if (message.type === 'finish') {
-          console.log(`Worker ${worker.process.pid} finished`);
-
-          worker.disconnect();
-
-          resolve(message.result);
-        }
-      });
-
-      worker.on('error', (error) => {
-        reject(error);
-      });
-
-      task(worker);
-    })
-  })
-}
+const { testers } = require('../testers');
 
 const spawnWorkers = async (bookmarksWithTesters) => {
-  return await new Promise(async resolve => {
-    const cores = Math.min(cpus().length, 6);
-    
-    const chunks = _.chunk(bookmarksWithTesters, Math.ceil(bookmarksWithTesters.length / cores));
-  
-    const results = await Promise.all(chunks.map(chunk => {
-      return createWorker(worker => {
-        worker.send({
-          task: 'process',
-          bookmarks: chunk,
-        });
-      })
-    }));
+    const chunks = _.chunk(bookmarksWithTesters, 25);
 
-    resolve(results.flat());
-  });
+    let i = 0;
+    const results = [];
+
+    for (const bookmarks of chunks) {
+      const promises = bookmarks.map(bookmark =>
+        bookmark.tester
+          ? testers[bookmark.tester].test(bookmark.url)
+          : false
+      );
+
+      const checkResult = (await Promise.all(promises)).filter(result => result === false);
+
+      results.push(
+        ...checkResult,
+      );
+      i += 1;
+
+      console.log(`
+DONE: ${i} / ${chunks.length} (${i * 25}/${bookmarksWithTesters.length})
+[missing: ${checkResult.length}, total: ${results.length}]
+`);
+    }
+
+    return results;
 }
 
 module.exports = {

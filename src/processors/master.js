@@ -7,7 +7,7 @@ const { spawnWorkers } = require('./workerManager');
 const assignTesters = ( bookmarks) => {
   return bookmarks.map(bookmark => ({
     ...bookmark,
-    tester: testers.find(t => t.pretest(bookmark.url))?.name ?? null,
+    tester: Object.values(testers).find(t => t.pretest(bookmark.url))?.name ?? null,
   }));
 }
 

@@ -11,7 +11,11 @@ module.exports = {
     },
     async test (url) {
       try {
-        const res = await got.head(url, { throwHttpErrors: false });
+        const res = await got.head(url, {
+          throwHttpErrors: false,
+          retry: 1,
+          timeout: 1000 * 10,
+        });
         
         return res.statusCode !== 404;
       } catch (e) {
