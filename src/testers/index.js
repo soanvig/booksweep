@@ -4,7 +4,7 @@ const { youtubeTester } = require('./youtubeTester');
 
 module.exports = {
   testers: {
-    [httpTester.name]: httpTester,
     [youtubeTester.name]: youtubeTester,
+    [httpTester.name]: httpTester,
   },
 }
