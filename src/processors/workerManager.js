@@ -10,11 +10,11 @@ const spawnWorkers = async (bookmarksWithTesters) => {
     for (const bookmarks of chunks) {
       const promises = bookmarks.map(bookmark =>
         bookmark.tester
-          ? testers[bookmark.tester].test(bookmark.url)
-          : false
+          ? testers[bookmark.tester].test(bookmark.url).then(result => ({ result, bookmark }))
+          : { result: false, bookmark }
       );
 
-      const checkResult = (await Promise.all(promises)).filter(result => result === false);
+      const checkResult = (await Promise.all(promises)).filter(result => result.result === false);
 
       results.push(
         ...checkResult,

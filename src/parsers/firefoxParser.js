@@ -30,25 +30,25 @@ module.exports = {
     }
 
     const keep = traverse([bookmarksJson]);
+
+    const unfiled = keep[0].children.find(c => c.guid === 'unfiled_____');
+
+    /** @TODO handle missing unfiled */
+
     const omittedDirectory = {
       "guid": "clearedUp________",
       "title": "cleared-up",
-      "index": keep[0].children.length,
+      "index": unfiled.children.length,
       "dateAdded": Date.now() * 1000,
       "lastModified": Date.now() * 1000,
-      "id": 666,
+      "id": 666666666,
       "typeCode": 2,
       "type": "text/x-moz-place-container",
-      "root": "bookmarksMenuFolder",
       children: omitted,
     }
 
-    return {
-      ...keep[0],
-      children: [
-        ...keep[0].children,
-        omittedDirectory,
-      ],
-    };
+    unfiled.children.push(omittedDirectory)
+
+    return keep[0];
   }
 } 

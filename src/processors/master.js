@@ -4,7 +4,7 @@ const { firefoxParser, firefoxApplier } = require('../parsers/firefoxParser');
 const { testers } = require('../testers');
 const { spawnWorkers } = require('./workerManager');
 
-const assignTesters = ( bookmarks) => {
+const assignTesters = (bookmarks) => {
   return bookmarks.map(bookmark => ({
     ...bookmark,
     tester: Object.values(testers).find(t => t.pretest(bookmark.url))?.name ?? null,
@@ -19,7 +19,7 @@ const masterProcessor = async () => {
 
   const result = await spawnWorkers(bookmarksWithTesters);
 
-  const applied = firefoxApplier(bookmarksJson, result);
+  const applied = firefoxApplier(bookmarksJson, result.map(r => r.bookmark.id));
 
   await fs.writeFile('./parsed.json', JSON.stringify(applied));
 }
